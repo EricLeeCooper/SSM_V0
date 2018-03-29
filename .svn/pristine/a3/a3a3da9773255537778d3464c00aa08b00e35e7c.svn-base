@@ -1,0 +1,17 @@
+package com.panda.util;
+
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.scheduling.quartz.QuartzJobBean;
+
+import com.sun.istack.internal.logging.Logger;
+
+public class QuartzTask001 extends QuartzJobBean{
+	private static final Logger log = Logger.getLogger(QuartzTask001.class);
+	@Override
+	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+		// TODO Auto-generated method stub
+		log.info("定时任务。。。。");
+	}
+
+}

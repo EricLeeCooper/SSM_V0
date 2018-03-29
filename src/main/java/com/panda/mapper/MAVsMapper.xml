@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.panda.dao.MAVSMapper">
+	
+	<!-- 查找文件 -->
+	<select id="findPartMAVs" resultType="MAV" parameterType="map">
+		select * from t_t_mav
+			<where>
+				<trim suffixOverrides="and">
+					<if test="map.name != null and map.name != ''">
+						name LIKE concat(concat('%',#{map.name}),'%') and
+					</if>
+					<if test="map.fileType != null and map.fileType != ''">
+						fileType = #{map.fileType} and
+					</if>
+					<if test="map.userId != null and map.userId != ''">
+						uid  = #{map.userId}
+					</if>
+				</trim> 
+			</where>
+			order by id
+			limit #{map.start},#{map.rows}
+	</select>
+	<!-- 新增文件信息 -->
+	<insert id="addNewMAV" parameterType="map">
+		insert into t_t_mav(uid,name,size,length,path,filetype) values(#{map.userId},#{map.name},#{map.size},#{map.length},#{map.path},#{map.fileType})
+	</insert>
+	<!-- 删除文件信息 -->
+	<delete id="deleteMAV" parameterType="int">
+		delete from t_t_mav where id = #{id}
+	</delete>
+	<!-- 修改文件信息 -->
+	<update id="updateMAV" parameterType="map">
+		update t_t_mav set name = #{pojo.name},size = #{pojo.size},length =  #{pojo.length},path = #{pojo.path} where id = #{pojo.id}
+	</update>
+	<!-- 查找单个文件 -->
+	<select id="findMAVById" parameterType="int" resultType="MAV" >
+		select * from t_t_mav where id = #{id}
+	</select>
+	<!-- 查找所有文件 -->
+	<select id="findAllMAVs" resultType="MAV" parameterType="int">
+		select * from t_t_mav where uid = #{userId} order by id 
+	</select>
+	
+</mapper>

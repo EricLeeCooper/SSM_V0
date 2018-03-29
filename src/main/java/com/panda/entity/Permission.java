@@ -1,0 +1,47 @@
+package com.panda.entity;
+
+public class Permission {
+	private int id;
+	private String pName;
+	private String pCode;
+	private int pid;
+	private int plevel;
+	private String url;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getpName() {
+		return pName;
+	}
+	public void setpName(String pName) {
+		this.pName = pName;
+	}
+	public String getpCode() {
+		return pCode;
+	}
+	public void setpCode(String pCode) {
+		this.pCode = pCode;
+	}
+	public int getPid() {
+		return pid;
+	}
+	public void setPid(int pid) {
+		this.pid = pid;
+	}
+	public int getPlevel() {
+		return plevel;
+	}
+	public void setPlevel(int plevel) {
+		this.plevel = plevel;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
+}

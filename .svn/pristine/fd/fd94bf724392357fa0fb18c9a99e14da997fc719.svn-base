@@ -1,0 +1,19 @@
+package com.panda.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.panda.entity.Func;
+import com.panda.entity.Permission;
+
+public interface SystemMapper {
+	List<Func> findFuncsById(int id);
+
+	int findAllPermissions();
+
+	List<Permission> findPagePermissions(@Param("map")Map<String, Object> map);
+
+	int findPartPermissions(@Param("map")Map<String, Object> map);
+}

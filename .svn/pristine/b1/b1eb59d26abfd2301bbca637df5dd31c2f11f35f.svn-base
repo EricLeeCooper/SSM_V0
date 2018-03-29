@@ -1,0 +1,79 @@
+package com.panda.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.panda.dao.SystemMapper;
+import com.panda.entity.Func;
+import com.panda.entity.Permission;
+import com.panda.entity.User;
+import com.panda.service.SystemService;
+@Service("systemService")
+public class SystemServiceImpl implements SystemService {
+	@Resource
+	private SystemMapper systemMapper;
+
+	public List<Func> findFuncsById(int id) {
+		// TODO Auto-generated method stub
+		List<Func> list= systemMapper.findFuncsById(id);
+		return list;
+	}
+
+	public int findAllPermissions() {
+		// TODO Auto-generated method stub
+		return systemMapper.findAllPermissions();
+	}
+
+	public List<Permission> findPagePermissions(String name, String plevel, int page, int rows) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		if(plevel != null && plevel.trim() != "") {
+			map.put("plevel", Integer.valueOf(plevel));
+		}else {
+			map.put("plevel",null);
+		}
+		map.put("name", name);
+		map.put("start", rows*(page-1));
+		map.put("end", rows);
+		return systemMapper.findPagePermissions(map);
+	}
+
+	public int findPartPermissions(String name, String plevel) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		if(plevel != null && plevel.trim() != "") {
+			map.put("plevel", Integer.valueOf(plevel));
+		}else {
+			map.put("plevel",null);
+		}
+		map.put("name", name);
+		// TODO Auto-generated method stub
+		return systemMapper.findPartPermissions(map);
+	}
+	public int findAllUsers() {
+		// TODO Auto-generated method stub
+		return systemMapper.findAllUsers();
+	}
+	
+	public List<User> findPageUsers(String name, String ident, int page, int rows) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("ident", ident);
+		map.put("name", name);
+		map.put("start", rows*(page-1));
+		map.put("end", rows);
+		return systemMapper.findPageUsers(map);
+	}
+	
+	public int findPartUsers(String name, String plevel) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		if(plevel != null && plevel.trim() != "") {
+			map.put("plevel", Integer.valueOf(plevel));
+		}else {
+			map.put("plevel",null);
+		}
+		map.put("name", name);
+		// TODO Auto-generated method stub
+		return systemMapper.findPartUsers(map);
+	}
+
+}

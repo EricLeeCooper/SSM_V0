@@ -1,0 +1,16 @@
+package com.panda.service;
+
+import java.util.List;
+
+import com.panda.entity.Func;
+import com.panda.entity.Permission;
+
+public interface SystemService {
+	List<Func> findFuncsById(int id);
+
+	int findAllPermissions();
+
+	List<Permission> findPagePermissions(String name, String plevel, int page, int rows);
+
+	int findPartPermissions(String name, String plevel);
+}

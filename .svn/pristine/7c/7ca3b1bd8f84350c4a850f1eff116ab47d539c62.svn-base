@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.panda.dao.SystemMapper">
+	<select id="findFuncsById" parameterType="int" resultMap="systemMap">
+		select id,func_name,func_code,pid from t_t_func where pid = #{id} 
+	</select>
+	<select id="findAllPermissions" resultType="int">
+		select count(*) from t_t_permission
+	</select>
+	<select id="findPartPermissions" parameterType="map" resultType="int">
+		select count(*) from t_t_permission
+		<where>
+			<trim suffixOverrides="and">
+					<if test="map.name != null and map.name != ''">
+						name LIKE concat(concat('%',#{map.name}),'%') and
+					</if>
+					<if test="map.plevel != null and map.plevel != ''">
+						plevel = #{map.plevel} and
+					</if>
+				</trim> 
+		</where>
+	</select>
+	<select id="findPagePermissions" parameterType="map" resultType="Permission">
+		select id,pname,pcode,pid,plevel from t_t_permission
+		<where>
+			<trim suffixOverrides="and">
+					<if test="map.name != null and map.name != ''">
+						name LIKE concat(concat('%',#{map.name}),'%') and
+					</if>
+					<if test="map.plevel != null and map.plevel != ''">
+						plevel = #{map.plevel} and
+					</if>
+				</trim> 
+		</where>
+		order by id
+		limit #{map.start},#{map.end}
+	</select>
+	<select id="findAllUsers" resultType="int">
+		select count(*) from t_t_User
+	</select>
+	<select id="findPartUsers" parameterType="map" resultType="int">
+		select count(*) from t_t_User
+		<where>
+			<trim suffixOverrides="and">
+					<if test="map.name != null and map.name != ''">
+						name LIKE concat(concat('%',#{map.name}),'%') and
+					</if>
+					<if test="map.ident != null and map.ident != ''">
+						ident LIKE concat(concat('%',#{map.ident}),'%') and
+					</if>
+				</trim> 
+		</where>
+	</select>
+	<select id="findPageUsers" parameterType="map" resultType="User">
+		select * from t_t_user
+		<where>
+			<trim suffixOverrides="and">
+					<if test="map.name != null and map.name != ''">
+						name LIKE concat(concat('%',#{map.name}),'%') and
+					</if>
+					<if test="map.ident != null and map.ident != ''">
+						ident LIKE concat(concat('%',#{map.ident}),'%') and
+					</if>
+				</trim> 
+		</where>
+		order by id
+		limit #{map.start},#{map.end}
+	</select>
+	
+	<resultMap type="Func" id="systemMap">
+		<id property="id" column="id"/>
+  		<result property="funcName" column="func_name"/>
+  		<result property="funcCode" column="func_code"/>
+  		<result property="pid" column="pid"/>
+	</resultMap>
+</mapper>

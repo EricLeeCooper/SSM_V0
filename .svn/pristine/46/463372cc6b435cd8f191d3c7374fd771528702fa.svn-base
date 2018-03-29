@@ -1,0 +1,163 @@
+package com.panda.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.panda.entity.Func;
+import com.panda.entity.Permission;
+import com.panda.entity.User;
+import com.panda.service.SystemService;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+/**
+ * 系统管理
+ * @author Administrator
+ *
+ */
+@Controller
+@RequestMapping("/system")
+public class SystemController {
+	@Resource
+	private SystemService service;
+	@RequestMapping(value="/systemInfo",
+			method={RequestMethod.POST,RequestMethod.GET},
+			produces={"text/html;charset=UTF-8;","application/json;"})
+	public @ResponseBody String systemInfoPage() {
+		 JSONObject jo = new JSONObject();
+		 jo.put("address", "system/systemInfo");
+		 jo.put("title", "系统信息");
+		return jo.toString();
+	}
+	@RequestMapping(value="/roleManage",
+			method={RequestMethod.POST,RequestMethod.GET},
+			produces={"text/html;charset=UTF-8;","application/json;"})
+	public @ResponseBody String roleManage() {
+		JSONObject jo = new JSONObject();
+		jo.put("address", "system/roleManage");
+		jo.put("title", "角色管理");
+		return jo.toString();
+	}
+	@RequestMapping(value="/userManage",
+			method={RequestMethod.POST,RequestMethod.GET},
+			produces={"text/html;charset=UTF-8;","application/json;"})
+	public @ResponseBody String userManage() {
+		JSONObject jo = new JSONObject();
+		jo.put("address", "system/userManage");
+		jo.put("title", "用户管理");
+		return jo.toString();
+	}
+	@RequestMapping(value="/perManage",
+			method={RequestMethod.POST,RequestMethod.GET},
+			produces={"text/html;charset=UTF-8;","application/json;"})
+	public @ResponseBody String perManage() {
+		JSONObject jo = new JSONObject();
+		jo.put("address", "system/perManage");
+		jo.put("title", "权限管理");
+		return jo.toString();
+	}
+	@RequestMapping(value="/perList",
+			method={RequestMethod.POST,RequestMethod.GET},
+			produces={"text/html;charset=UTF-8;","application/x-www-form-urlencoded"})
+	public @ResponseBody Object perList(Map<String, Object> map,HttpServletRequest req,@RequestParam("page")int page,@RequestParam("rows")int rows) {
+		String name=req.getParameter("name");
+		String plevel = req.getParameter("plevel");
+		List<Permission> plist = service.findPagePermissions(name,plevel,page,rows);
+		JSONArray json = new JSONArray();
+		for(Permission p:plist) {
+			JSONObject jo = new JSONObject();
+			jo.put("pname", p.getpName());
+			jo.put("pcode", p.getpCode());
+			jo.put("plevel", p.getPlevel());
+			jo.put("pid", p.getPid());
+			jo.put("id", p.getId());
+			json.add(jo);
+		}
+		if((name == null || name == "") && (plevel == null || plevel == "")){
+			int pAll = service.findAllPermissions();
+			map.put("total", pAll);
+		}else {
+			int pPart = service.findPartPermissions(name,plevel);
+			map.put("total", pPart);
+		}
+		map.put("rows", json);
+		
+		return JSONObject.fromObject(map).toString();
+	}
+	@RequestMapping(value="/userList",
+			method={RequestMethod.POST,RequestMethod.GET},
+			produces={"text/html;charset=UTF-8;","application/x-www-form-urlencoded"})
+	public @ResponseBody Object userList(Map<String, Object> map,HttpServletRequest req,@RequestParam("page")int page,@RequestParam("rows")int rows) {
+		String name=req.getParameter("name");
+		String ident = req.getParameter("ident");
+		List<User> ulist = service.findPageUsers(name,ident,page,rows);
+		JSONArray json = new JSONArray();
+		for(User u:ulist) {
+			JSONObject jo = new JSONObject();
+			jo.put("id", u.getId());
+			jo.put("name", u.getName());
+			jo.put("uname", u.getUsername());
+			jo.put("address", u.getAddress());
+			jo.put("email", u.getEmail());
+			jo.put("ident", u.getIdent());
+			jo.put("phone", u.getPhone());
+			jo.put("password", u.getPassword());
+			json.add(jo);
+		}
+		if((name == null || name == "") && (ident == null || ident == "")){
+			int pAll = service.findAllUsers();
+			map.put("total", pAll);
+		}else {
+			int pPart = service.findPartUsers(name,ident);
+			map.put("total", pPart);
+		}
+		map.put("rows", json);
+		
+		return JSONObject.fromObject(map).toString();
+	}
+	
+	@RequestMapping(value="/functionList",
+			method={RequestMethod.POST,RequestMethod.GET},
+			produces={"text/html;charset=UTF-8;","application/json;"})
+	public @ResponseBody String functionList() {
+		JSONObject jo = new JSONObject();
+		jo.put("address", "system/functionList");
+		jo.put("title", "系统功能");
+		return jo.toString();
+	}
+	@RequestMapping(value="/getFunctions",
+			method={RequestMethod.POST,RequestMethod.GET},
+			produces={"text/html;charset=UTF-8;","application/x-www-form-urlencoded"})
+	public @ResponseBody Object funcsList(Map<String, Object> map,HttpSession sessions,HttpServletRequest req) {
+		int id = Integer.valueOf(req.getParameter("id")==null?"0":req.getParameter("id"));
+		List<Func> flist = service.findFuncsById(id);
+		JSONArray json = new JSONArray();
+		for(Func func:flist) {
+			String flag = "open"; 
+			JSONObject jo = new JSONObject();
+			List<Func> sflist = service.findFuncsById(func.getId());
+			if(sflist.size()>0) {
+				flag = "closed";
+			}
+			jo.put("func_flag", flag);
+			jo.put("id", func.getId());
+			jo.put("func_name", func.getFuncName());
+			jo.put("func_code", func.getFuncCode());
+			jo.put("pid",func.getPid());
+			json.add(jo);
+		}
+		map.put("value", json);
+		map.put("size", flist.size());
+		return JSONObject.fromObject(map).toString();
+	}
+}

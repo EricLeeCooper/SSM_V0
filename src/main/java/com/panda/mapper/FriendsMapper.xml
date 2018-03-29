@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.panda.dao.FriendsMapper">
+	
+	<!-- 查找好友 -->
+	<select id="findPartUsers" resultType="User" parameterType="map">
+		select * from t_t_user
+			<where>
+				<trim suffixOverrides="and">
+					<if test="map.name != null and map.name != ''">
+						name LIKE concat(concat('%',#{map.name}),'%') and
+					</if>
+					<if test="map.address != null and map.address != ''">
+						address LIKE concat(concat('%',#{map.address}),'%') and
+					</if>
+					<if test="map.userId != null and map.userId != ''">
+						id in (select fid from t_t_friends where mid = #{map.userId})
+					</if>
+				</trim> 
+			</where>
+			order by id
+			limit #{map.start},#{map.rows}
+	</select>
+	<!-- 新增好友信息 -->
+	<insert id="addFriend" parameterType="map">
+		insert into t_t_friends(mid,fid) values(#{map.userId},#{map.id})
+	</insert>
+	<!-- 好友新增我的信息 -->
+	<insert id="addDFriend" parameterType="Student">
+		insert into t_t_friends(fid,mid) values(#{map.userId},#{map.id})
+	</insert>
+	<!-- 删除好友信息 -->
+	<delete id="deleteFriend" parameterType="map">
+		delete from t_t_friends where mid=#{map.userId} and fid = #{map.id}
+	</delete>
+	<!-- 好友删除我的信息 -->
+	<delete id="deleteDFriend" parameterType="map">
+		delete from t_t_friends where fid=#{map.userId} and mid = #{map.id}
+	</delete>
+	<!-- 查找单个好友信息 -->
+	<select id="findFriendOfMine" parameterType="map" resultType="User">
+		select * from t_t_friends where mid=#{map.userId} and fid=#{map.id}
+	</select>
+	<!-- 查找用户 -->
+	<select id="findUserById" parameterType="int" resultType="User" >
+		select * from t_t_user where id = #{id}
+	</select>
+	<!-- 查找所有用户 -->
+	<select id="findAllUsers" parameterType="int" resultType="User" >
+		select * from t_t_user
+			<where>
+				<trim suffixOverrides="and">
+					<if test="map.name != null and map.name != ''">
+						name LIKE concat(concat('%',#{map.name}),'%') and
+					</if>
+					<if test="map.address != null and map.address != ''">
+						address LIKE concat(concat('%',#{map.address}),'%') and
+					</if>
+				</trim> 
+			</where>
+			order by id
+			limit #{map.start},#{map.rows}
+	</select>
+	<!-- 查找所有好友 -->
+	<select id="findAllFriends" resultType="User" parameterType="map">
+		select * from t_t_user where id in(select fid from t_t_friends where mid = #{userId}) order by id
+	</select>
+	
+	<!-- 查找所有用户 -->
+	<select id="findAlluser" parameterType="map" resultType="User">
+		select * from t_t_user
+			<where>
+				<trim suffixOverrides="and">
+					<if test="map.name != null and map.name != ''">
+						name LIKE concat(concat('%',#{map.name}),'%') and
+					</if>
+					<if test="map.address != null and map.address != ''">
+						address LIKE concat(concat('%',#{map.address}),'%') and
+					</if>
+				</trim> 
+			</where>
+	</select>
+	<!-- 根据条件查找好友 -->
+	<select id="findPartFriends" resultType="User" parameterType="map">
+		select * from t_t_friends
+		<where>
+			<trim suffixOverrides="and">
+				<if test="map.name != null and map.name != ''">
+					name LIKE concat(concat('%',#{map.name}),'%') and
+				</if>
+				<if test="map.address != null and map.address != ''">
+					address LIKE concat(concat('%',#{map.address}),'%') and
+				</if>
+				<if test="map.userId != null and map.userId != ''">
+					id in (select fid from t_t_friends where mid = #{map.userId})
+				</if>
+			</trim>
+		</where>
+	</select>
+</mapper>

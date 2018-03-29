@@ -1,0 +1,43 @@
+package com.panda.test;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.panda.controller.PandaController;
+import com.panda.entity.Count;
+import com.panda.service.CountService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"classpath:spring-mybatis.xml"})
+public class Test2 {
+//	private ApplicationContext ac=null;
+//	@Before
+//	public void setUp() throws Exception {
+//		ac=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+//	}
+	@Resource
+	private CountService countService=null;
+	 private static Logger logger = Logger.getLogger(Test2.class);  
+	int i = 1;
+	@Test
+	public void test1() {
+//		CountServiceImpl countService = (CountServiceImpl)ac.getBean("countService");
+		Count coun=countService.serchOne(i);
+		logger.info(coun);
+		System.out.println(coun);
+	}
+	@Test
+	public void test2(){
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:spring-mybatis.xml");
+        ctx.start();
+        PandaController token = (PandaController)ctx.getBean(PandaController.class);
+        token.test();
+	}
+
+}

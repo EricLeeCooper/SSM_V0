@@ -1,0 +1,12 @@
+package com.panda.util;
+@SuppressWarnings("unused")
+public class LogHandler {
+	
+
+	private void beforeAct() {
+//		System.out.println("调用方法开始前记录...");
+	}
+	private void afterAct() {
+//		System.out.println("调用方法结束后记录...");
+	}
+}
